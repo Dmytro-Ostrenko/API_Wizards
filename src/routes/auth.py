@@ -20,7 +20,7 @@ async def signup(body: UserModel, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Account already exists")
     body.password = auth_service.get_password_hash(body.password)
     new_user = await repository_users.create_user(body, db)
-    return {"user": new_user, "detail": "User successfully created"}
+    return {"user": new_user, "detail": "User success fully created"}
 
 
 @router.post("/login", response_model=TokenModel)
