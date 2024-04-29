@@ -27,4 +27,8 @@ class UserResponse(BaseModel):
 class TokenModel(BaseModel):
     access_token: str
     refresh_token: str
+<<<<<<< HEAD
     token_type: str = "bearer"
+=======
+    token_type: str = "bearer"
+>>>>>>> 04b9ae8763d9db3f44897c4241fe9530aaffcdfa
