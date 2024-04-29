@@ -7,9 +7,17 @@ from src.services.auth import Auth
 from src.database.models import User, Role
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database.db import get_db
+<<<<<<< HEAD
+from pydantic import BaseModel
+from typing import List
+
+from src.routes import auth
+from src.routes import comments
+=======
 
 from src.routes import auth
 
+>>>>>>> 04b9ae8763d9db3f44897c4241fe9530aaffcdfa
 import uvicorn
 
 app = FastAPI()
@@ -17,6 +25,10 @@ app = FastAPI()
 
 
 app.include_router(auth.router, prefix="/api")
+<<<<<<< HEAD
+app.include_router(comments.router, prefix="/api")
+=======
+>>>>>>> 04b9ae8763d9db3f44897c4241fe9530aaffcdfa
 
 # Створимо екземпляр класу Auth для використання
 auth_service = Auth()
@@ -32,11 +44,35 @@ async def home_page(request: Request, db: AsyncSession = Depends(get_db)):
             db.add(Role(role=current_users))
     db.commit()
     
+<<<<<<< HEAD
+
+
+class Comment(BaseModel):
+    text: str
+    photo_id: int
+
+
+@app.post("/comments/")
+async def create_comment(comment: Comment):
+    get_db.append(comment)
+    return {"message": "Коментар додано"}
+
+@app.get("/comments/")
+async def get_comments():
+    return get_db
+
+@app.delete("/comments/{comment_id}")
+async def delete_comment(comment_id: int):
+    get_db.pop(comment_id)
+    return {"message": "Коментар видалено"}
+    
+=======
+>>>>>>> 04b9ae8763d9db3f44897c4241fe9530aaffcdfa
 
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
-    
-    
 
+    
+    
