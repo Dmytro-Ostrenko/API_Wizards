@@ -85,4 +85,8 @@ class Auth:
         return user
 
 
+<<<<<<< HEAD
 auth_service = Auth()
+=======
+auth_service = Auth()
+>>>>>>> 04b9ae8763d9db3f44897c4241fe9530aaffcdfa
