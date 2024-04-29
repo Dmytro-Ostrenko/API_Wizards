@@ -45,7 +45,7 @@ class Photos(Base):
     photo_link: Mapped[str] = mapped_column(String(50))
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     #tags_id: Mapped[int] = mapped_column(ForeignKey('tags.id'), nullable=True)
-    #coments_id: Mapped[int] = mapped_column(ForeignKey('coments.id'), nullable=True)
+    #comments_id: Mapped[int] = mapped_column(ForeignKey('comments.id'), nullable=True)
     description =  mapped_column(String(255), nullable=True)
     created_at: Mapped[date] = mapped_column('created_at', DateTime, default=func.now())
     updated_at: Mapped[date] = mapped_column('updated_at', DateTime, default=func.now(), onupdate=func.now())
@@ -55,8 +55,8 @@ class Photos(Base):
     tags = relationship("Tags", secondary="photo_tags", back_populates="photos")
     comments = relationship("Comments", back_populates="photo")
     
-class Coments(Base):
-    __tablename__ = "coments"
+class Comments(Base):
+    __tablename__ = "comments"
     id: Mapped[int] = mapped_column(primary_key=True, unique=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     photo_id : Mapped[int] = mapped_column(ForeignKey('photos.id')) 
@@ -65,5 +65,5 @@ class Coments(Base):
     description =  mapped_column(String(255), nullable=True)
     
     photo = relationship("Photos", back_populates="comments") 
-    user = relationship("User", back_populates="user_coments")
+    user = relationship("User", back_populates="user_comments")
 
