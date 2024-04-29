@@ -5,7 +5,9 @@ from src.schemas import schemas_comments
 import src.repository
 from src.database.db import get_db
 
-router = APIRouter()
+
+router = APIRouter(prefix='/comments', tags=["comments"])
+
 
 @router.get("/comments/{comment_id}", response_model=schemas_comments.Comment)
 def read_comment(comment_id: int, db: Session = Depends(get_db)):
