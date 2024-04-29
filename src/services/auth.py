@@ -84,9 +84,5 @@ class Auth:
 
         return user
 
+auth_service = Auth()
 
-<<<<<<< HEAD
-auth_service = Auth()
-=======
-auth_service = Auth()
->>>>>>> 04b9ae8763d9db3f44897c4241fe9530aaffcdfa
