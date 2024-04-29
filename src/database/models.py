@@ -1,71 +1,81 @@
 import enum
-from sqlalchemy import orm
-from sqlalchemy import Column, Integer, String, Date, ForeignKey,  Enum, DateTime, func, Boolean
-from sqlalchemy.orm import Mapped, mapped_column, relationship, DeclarativeBase
+from sqlalchemy import orm, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Enum, DateTime, func, Boolean
+from sqlalchemy.orm import relationship, DeclarativeBase
 from datetime import datetime, date
 
 
-class Base(orm.DeclarativeBase):
+class Base(DeclarativeBase):
     pass
-  
-    
+
+
 class Role(enum.Enum):
-    admin: str = "admin"
-    moderator: str = "moderator"
-    user: str = "user"
-    
-class User(Base):
-    __tablename__ = 'users'
-    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
-    username: Mapped[str] = mapped_column(String(50))
-    email: Mapped[str] = mapped_column(String(150), nullable=False, unique=True)
-    password: Mapped[str] = mapped_column(String(255), nullable=False)
-    avatar: Mapped[str] = mapped_column(String(255), nullable=True)        
-    refresh_token: Mapped[str] = mapped_column(String(255), nullable=True)
-    created_at: Mapped[date] = mapped_column('created_at', DateTime, default=func.now())
-    updated_at: Mapped[date] = mapped_column('updated_at', DateTime, default=func.now(), onupdate=func.now())
-    role: Mapped[Enum] = mapped_column('role', Enum(Role), default=Role.user, nullable=True)
-    confirmed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
-    baned: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
+    admin = "admin"
+    moderator = "moderator"
+    user = "user"
 
 
-    user_photo = relationship("Photo", back_populates="user")
-    user_coments = relationship("Сomment", back_populates="user") 
-    
-    
-class Tags(Base):
-    __tablename__ = "tags"
-    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
-    #photo_id: Mapped[int] = mapped_column(primary_key=True, unique=True)
-    tag_name : Mapped[str] = mapped_column(String(150), primary_key=True, unique=True)
-    
 class Photos(Base):
     __tablename__ = "photos"
-    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
-    photo_link: Mapped[str] = mapped_column(String(50))
-    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
-    #tags_id: Mapped[int] = mapped_column(ForeignKey('tags.id'), nullable=True)
-    #comments_id: Mapped[int] = mapped_column(ForeignKey('comments.id'), nullable=True)
-    description =  mapped_column(String(255), nullable=True)
-    created_at: Mapped[date] = mapped_column('created_at', DateTime, default=func.now())
-    updated_at: Mapped[date] = mapped_column('updated_at', DateTime, default=func.now(), onupdate=func.now())
-
-
-    user = relationship("User", back_populates="user_photo")  
+    id = Column(Integer, primary_key=True, unique=True)
+    photo_link = Column(String(255))
+    user_id = Column(Integer, ForeignKey('users.id'))
+    owner = relationship("User", back_populates="photos")
+    description = Column(String(255), nullable=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    user = relationship("User", back_populates="user_photo")
     tags = relationship("Tags", secondary="photo_tags", back_populates="photos")
     comments = relationship("Comments", back_populates="photo")
-    
+    photo_tags = relationship("PhotoTags")
+    __table_args__ = (
+        UniqueConstraint('photo_link', name='unique_photo_link'),
+    )
+
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True, unique=True)
+    username = Column(String(50))
+    email = Column(String(150), nullable=False, unique=True)
+    password = Column(String(255), nullable=False)
+    avatar = Column(String(255), nullable=True)
+    refresh_token = Column(String(255), nullable=True)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    role = Column(Enum(Role), default=Role.user, nullable=True)
+    confirmed = Column(Boolean, default=False, nullable=True)
+    baned = Column(Boolean, default=False, nullable=True)
+    photos = relationship("Photos", back_populates="owner")
+    user_photo = relationship("Photos", back_populates="user")
+    user_comments = relationship("Comments", back_populates="user")
+
+
+
+class Tags(Base):
+    __tablename__ = "tags"
+    id = Column(Integer, primary_key=True, unique=True)
+    tag_name = Column(String(150), primary_key=True, unique=True)
+    photos = relationship("Photos", secondary="photo_tags", back_populates="tags")
+    photo_tags = relationship("PhotoTags", back_populates="tag")
+
+
+
 class Comments(Base):
     __tablename__ = "comments"
-    id: Mapped[int] = mapped_column(primary_key=True, unique=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
-    photo_id : Mapped[int] = mapped_column(ForeignKey('photos.id')) 
-    created_at: Mapped[date] = mapped_column('created_at', DateTime, default=func.now())
-    updated_at: Mapped[date] = mapped_column('updated_at', DateTime, default=func.now(), onupdate=func.now())
-    description =  mapped_column(String(255), nullable=True)
-    
-    photo = relationship("Photos", back_populates="comments") 
+    id = Column(Integer, primary_key=True, unique=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    photo_id = Column(Integer, ForeignKey('photos.id'))
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    description = Column(String(255), nullable=True)
+
+    photo = relationship("Photos", back_populates="comments")
     user = relationship("User", back_populates="user_comments")
 
-
-
+class PhotoTags(Base):
+    __tablename__ = "photo_tags"
+    photo_id = Column(Integer, ForeignKey('photos.id'), primary_key=True)
+    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
+    photo = relationship("Photos", back_populates="photo_tags")
+    tag = relationship("Tags", back_populates="photo_tags")
