@@ -47,8 +47,8 @@ async def update_token(user: User, token: str | None, db: Session) -> None:
     :doc-author: Trelent
     """
     user.refresh_token = token
-<<<<<<< HEAD
+
     db.commit()
-=======
+
     db.commit()
->>>>>>> 04b9ae8763d9db3f44897c4241fe9530aaffcdfa
+
