@@ -8,7 +8,6 @@ import uvicorn
 from src.routes import photos
 from src.database.models import User, Role
 from src.routes import auth
-from src.database.db import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database.db import get_db
 
@@ -48,6 +47,3 @@ async def home_page(request: Request, db: AsyncSession = Depends(get_db)):
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
-    
-    
