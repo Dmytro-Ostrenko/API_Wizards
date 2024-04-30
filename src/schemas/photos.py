@@ -21,3 +21,8 @@ class PhotoResponse(BaseModel):
     user: UserResponse | None
 
     model_config = ConfigDict(from_attributes = True)
+
+class TransformedImageCreate(BaseModel):
+    user_id: int
+    image_url: str
+    transformation: str
