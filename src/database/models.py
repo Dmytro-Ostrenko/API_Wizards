@@ -79,3 +79,13 @@ class PhotoTags(Base):
     tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
     photo = relationship("Photos", back_populates="photo_tags")
     tag = relationship("Tags", back_populates="photo_tags")
+
+class TransformedPhoto(Base):
+    __tablename__ = "transformed_photos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, index=True)
+    photo_url = Column(String, index=True)
+    __table_args__ = (
+        UniqueConstraint('user_id', 'photo_url', name='unique_user_photo'),
+    )
