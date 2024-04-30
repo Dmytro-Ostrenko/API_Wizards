@@ -19,8 +19,9 @@ from src.routes import comments
 
 app = FastAPI()
 
-app.include_router(photos.router, prefix="/api")
+
 app.include_router(auth.router, prefix="/api")
+app.include_router(photos.router, prefix="/api")
 app.include_router(comments.router, prefix="/api")
 auth_service = Auth()
 
