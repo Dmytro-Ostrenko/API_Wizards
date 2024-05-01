@@ -18,29 +18,31 @@ git clone https://github.com/Dmytro-Ostrenko/API_Wizards
 
 ```
 cd API_Wizards
- ```
+```
 
 
 
 4. Встановіть “PhotoShare”  як Python-пакет :white_check_mark::
-    ```
-     pip install . 
-    ```
+```
+pip install . 
+```
 
 5. Далі встановлюємо poetry (віртуальне оточення) :white_check_mark::
-    ```
-    pip install poetry 
-    ```
+```
+pip install poetry 
+```
 
 6. Оновлюємо залежності встановленних бібліотек :white_check_mark::
-    ```
-    poetry pdate
-    ```
+```
+poetry pdate
+```
 
 7. Та активуємо віртуальне середовище :white_check_mark::
-    ```
-    poetry shell
-    ```
+```
+poetry shell
+```
+
+Через те, що в проекті є всже створенна БД (яка знаходиться у migrations/versions), крок із її створення пропускаємо 
 
  
 
