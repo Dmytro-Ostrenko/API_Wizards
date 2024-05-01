@@ -9,7 +9,12 @@
 Перед тим, як ви почнете використовувати застосунк “PhotoShare”, вам потрібно встановити його. Дотримуйтесь цих кроків:
 
 1. Клонуйте репозиторій на свій комп'ютер:    
-:white_check_mark: git clone [https://github.com/Dmytro-Ostrenko/project-group11-pyWeb-](https://github.com/Dmytro-Ostrenko/API_Wizards/)
+:white_check_mark:
+    ```
+    git clone [https://github.com/Dmytro-Ostrenko/project-group11-pyWeb-](https://github.com/Dmytro-Ostrenko/API_Wizards/)
+    ```
+
+
 
 
 3. Перейдіть в каталог проєкту:    
