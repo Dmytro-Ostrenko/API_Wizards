@@ -10,15 +10,15 @@
 
 1. Клонуйте репозиторій на свій комп'ютер :white_check_mark::    
 
-    ```
-    git clone https://github.com/Dmytro-Ostrenko/API_Wizards
-    ```
+```
+git clone https://github.com/Dmytro-Ostrenko/API_Wizards
+```
 
 2. Перейдіть в каталог проєкту :white_check_mark::    
 
-    ```
-    cd API_Wizards
-    ```
+```
+cd API_Wizards
+ ```
 
 
 
