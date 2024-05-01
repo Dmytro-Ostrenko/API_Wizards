@@ -1,5 +1,12 @@
 from fastapi import HTTPException
 from sqlalchemy import select
+
+import sys
+from pathlib import Path
+
+# Добавляем корневую папку проекта в sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from src.schemas.photos import PhotoSchema, PhotoUpdateSchema
 from src.database.models import Photos, User, TransformedPhoto
 from sqlalchemy.ext.asyncio import AsyncSession

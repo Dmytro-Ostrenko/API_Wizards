@@ -1,6 +1,13 @@
 from tempfile import NamedTemporaryFile
 from fastapi import APIRouter, Depends, status, Query, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
+
+import sys
+from pathlib import Path
+
+# Добавляем корневую папку проекта в sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from src.database.db import get_db
 from src.database.models import User, Role, TransformedPhoto
 from src.repository import photos

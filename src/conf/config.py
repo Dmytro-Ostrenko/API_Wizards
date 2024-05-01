@@ -1,5 +1,11 @@
 from typing import Any
 
+import sys
+from pathlib import Path
+
+# Добавляем корневую папку проекта в sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from pydantic import ConfigDict, field_validator, EmailStr
 from pydantic_settings import BaseSettings
 

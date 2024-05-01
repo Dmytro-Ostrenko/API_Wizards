@@ -1,5 +1,11 @@
 from fastapi import Request, Depends, HTTPException, status
 
+import sys
+from pathlib import Path
+
+# Добавляем корневую папку проекта в sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from src.database.models import Role, User
 from src.services.auth import Auth
 

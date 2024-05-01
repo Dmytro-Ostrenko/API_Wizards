@@ -1,6 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 #from . import schemas, repository
+
+import sys
+from pathlib import Path
+
+# Добавляем корневую папку проекта в sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from src.schemas import schemas_comments 
 import src.repository
 from src.database.db import get_db

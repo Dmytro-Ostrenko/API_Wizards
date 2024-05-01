@@ -1,7 +1,15 @@
 from libgravatar import Gravatar
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from src.database.models import User
+from typing import List
+import sys
+from pathlib import Path
+
+# Добавляем корневую папку проекта в sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
+
+from src.database.models import User, Role
 from src.schemas.schemas_auth import UserModel
 
 
@@ -12,7 +20,7 @@ async def get_user_by_email(email: str, db: AsyncSession) -> User:
     return user
 
 
-async def create_user(body: UserModel, db: AsyncSession) -> User:
+async def create_user(body: UserModel, db: AsyncSession, role: Role) -> User:
     """
     The create_user function creates a new user in the database.
         Args:
@@ -32,7 +40,7 @@ async def create_user(body: UserModel, db: AsyncSession) -> User:
         avatar = g.get_image()
     except Exception as e:
         print(e)
-    new_user = User(**body.dict(), avatar=avatar)
+    new_user = User(**body.dict(), avatar=avatar, role=role.value)
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
@@ -63,4 +71,20 @@ async def update_avatar_url(email: str, url: str | None, db: AsyncSession) -> Us
     user.avatar = url
     await db.commit()
     await db.refresh(user)
+    return user
+
+async def get_all_users(db: AsyncSession) -> List[User]:
+    stmt = select(User)
+    user = await db.execute(stmt)
+    user = user.scalars().all()
+    return user
+
+   
+
+async def update_user_role(email: str, new_role: Role, db: AsyncSession) -> User:
+    user = await get_user_by_email(email, db)
+    if user:
+        user.role = new_role.value
+        await db.commit()
+        await db.refresh(user)
     return user
