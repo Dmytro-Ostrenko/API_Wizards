@@ -11,7 +11,7 @@
 1. Клонуйте репозиторій на свій комп'ютер :white_check_mark::    
 
     ```
-    git clone [https://github.com/Dmytro-Ostrenko/project-group11-pyWeb-](https://github.com/Dmytro-Ostrenko/API_Wizards/)
+    git clone https://github.com/Dmytro-Ostrenko/API_Wizards
     ```
 
 2. Перейдіть в каталог проєкту :white_check_mark::    
@@ -22,8 +22,11 @@
 
 
 
-4. Встановіть “PhotoShare”  як Python-пакет:       
-:white_check_mark: pip install .  
+4. Встановіть “PhotoShare”  як Python-пакет :white_check_mark::
+    ```
+     pip install . 
+    ```      
+ 
 
 ## Налаштування та з'єднання із БД
 Для початку роботи із БД переконайтесь, що у Вас встановлено (посилання для завантаження: https://www.docker.com/products/docker-desktop/) та DBeaver (посилання для завантаження: https://dbeaver.io/download/), які оновлені до останньої версії.
