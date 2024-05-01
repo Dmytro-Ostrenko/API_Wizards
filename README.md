@@ -56,8 +56,24 @@ alembic revision --autogenerate -m 'Init'
 ```
 docker compose up -d
 ```
+Вірн налаштування з'єднання у DBeaver потребує вказати значення: 
+- name DB
+- user
+- password
+- ports
 
+Після вірного налаштування виконуємо команду для оновлення БД :white_check_mark::
+```
+alembic upgrade head
+```
 
+І нарешті після цього для запуску fastapi виконуємо команду :white_check_mark::
+```
+uvicorn main:app --reload   
+``` 
+І за адресою : http://127.0.0.1:8000 стає доступним застосунок :robot: “PhotoShare” :robot: 
+
+### Робота із застосунком “PhotoShare” 
 
 ### Назви фільтрів для обробки зображень в Cloudinary та їх функції:
 
