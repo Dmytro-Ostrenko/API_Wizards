@@ -42,7 +42,7 @@ poetry pdate
 poetry shell
 ```
 
-Через те, що в проекті є всже створенна БД (яка знаходиться у migrations/versions), крок із її створення пропускаємо за це відповідає команда:
+Через те, що в проекті є вже створенна БД (яка знаходиться у migrations/versions), крок із її створення пропускаємо за це відповідає команда:
 ```
 alembic revision --autogenerate -m 'Init'
 ```
@@ -52,7 +52,11 @@ alembic revision --autogenerate -m 'Init'
 * DockerDesktop (посилання для завантаження: https://www.docker.com/products/docker-desktop/)
 * DBeaver (посилання для завантаження: https://dbeaver.io/download/)
 
-Після відкриття програм  DBeaver та DockerDesktop
+Після відкриття програм  DBeaver та DockerDesktop, спершу налаштуємо з'єднання та запустимо контейнер у DockerDesktop, для цього вже було створено файл docker-compose.yml :white_check_mark: для цього виконуємо команду:
+```
+docker compose up -d
+```
+
 
 
 ### Назви фільтрів для обробки зображень в Cloudinary та їх функції:
