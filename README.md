@@ -49,8 +49,8 @@ alembic revision --autogenerate -m 'Init'
 ## Налаштування та з'єднання із БД
 Для початку роботи із БД переконайтесь, що у Вас встановлено та оновлені до останньої версії наступні програми:
 
-* DockerDesktop (посилання для завантаження з [офіційного сайту]([https://www.docker.com/products/docker-desktop/]) )
-* DBeaver (посилання для завантаження:   з [офіційного сайту]([https://dbeaver.io/download/])  )
+* DockerDesktop (посилання для завантаження з [офіційного сайту](https://www.docker.com/products/docker-desktop/).)
+* DBeaver (посилання для завантаження:   з [офіційного сайту](https://dbeaver.io/download/).  )
 
 Після відкриття програм  DBeaver та DockerDesktop, спершу налаштуємо з'єднання та запустимо контейнер у DockerDesktop, для цього вже було створено файл docker-compose.yml :white_check_mark: для цього виконуємо команду:
 ```
