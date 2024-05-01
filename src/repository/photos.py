@@ -7,13 +7,19 @@ import cloudinary.uploader
 from src.database.models import Photos
 import qrcode
 import os
+from src.conf.config import config
+
 
 UPLOAD_FOLDER = "uploads"
+
+
+
+
 async def upload_photo(file_path: str, user_id: int, db: AsyncSession):
     cloudinary.config(
-        cloud_name="dsm1gklce",
-        api_key="873821538232998",
-        api_secret="ebVxlgXmxbDmNI-GZBS3iAg0Hzg"
+        cloud_name=config.cloud_name,
+        api_key=config.api_key,
+        api_secret=config.api_secret
     )
     response = cloudinary.uploader.upload(file_path)
     photo_url = response['url']
@@ -50,9 +56,9 @@ async def get_photo_by_url(url: str, db: AsyncSession, user: User):
 
 async def resize_photo(url: str,  width: int, height: int, db: AsyncSession, user: User):
     cloudinary.config(
-        cloud_name="dsm1gklce",
-        api_key="873821538232998",
-        api_secret="ebVxlgXmxbDmNI-GZBS3iAg0Hzg"
+        cloud_name=config.cloud_name,
+        api_key=config.api_key,
+        api_secret=config.api_secret
     )
     response = cloudinary.uploader.upload(url, width=width, height=height)
     resized_url = response['url']
@@ -63,9 +69,9 @@ async def resize_photo(url: str,  width: int, height: int, db: AsyncSession, use
 
 async def crop_photo(url: str,  width: int, height: int, db: AsyncSession, user: User):
     cloudinary.config(
-        cloud_name="dsm1gklce",
-        api_key="873821538232998",
-        api_secret="ebVxlgXmxbDmNI-GZBS3iAg0Hzg"
+        cloud_name=config.cloud_name,
+        api_key=config.api_key,
+        api_secret=config.api_secret
     )
     response = cloudinary.uploader.upload(url, width=width, height=height, crop="crop")
     cropped_url = response['url']
@@ -76,9 +82,9 @@ async def crop_photo(url: str,  width: int, height: int, db: AsyncSession, user:
 
 async def apply_filter_and_text(url: str, filter_name: str, text: str, font_family: str, font_size: int, font_color: str, db: AsyncSession, user: User):
     cloudinary.config(
-        cloud_name="dsm1gklce",
-        api_key="873821538232998",
-        api_secret="ebVxlgXmxbDmNI-GZBS3iAg0Hzg"
+        cloud_name=config.cloud_name,
+        api_key=config.api_key,
+        api_secret=config.api_secret
     )
     response = cloudinary.uploader.upload(url, transformation=[
         {"effect": filter_name},
@@ -92,9 +98,9 @@ async def apply_filter_and_text(url: str, filter_name: str, text: str, font_fami
 
 async def convert_photo_format(url: str, new_format: str, db: AsyncSession, user: User):
     cloudinary.config(
-        cloud_name="dsm1gklce",
-        api_key="873821538232998",
-        api_secret="ebVxlgXmxbDmNI-GZBS3iAg0Hzg"
+        cloud_name=config.cloud_name,
+        api_key=config.api_key,
+        api_secret=config.api_secret
     )
     response = cloudinary.uploader.upload(url, format=new_format)
     converted_url = response['url']
@@ -106,9 +112,9 @@ async def convert_photo_format(url: str, new_format: str, db: AsyncSession, user
 
 async def get_photo_metadata(url: str, db: AsyncSession, user: User):
     cloudinary.config(
-        cloud_name="dsm1gklce",
-        api_key="873821538232998",
-        api_secret="ebVxlgXmxbDmNI-GZBS3iAg0Hzg"
+        cloud_name=config.cloud_name,
+        api_key=config.api_key,
+        api_secret=config.api_secret
     )
     response = cloudinary.uploader.upload(url)
     metadata = {
