@@ -14,7 +14,7 @@
     git clone [https://github.com/Dmytro-Ostrenko/project-group11-pyWeb-](https://github.com/Dmytro-Ostrenko/API_Wizards/)
     ```
 
-2. Перейдіть в каталог проєкту:white_check_mark::    
+2. Перейдіть в каталог проєкту :white_check_mark::    
 
     ```
     cd API_Wizards
