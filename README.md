@@ -25,7 +25,23 @@
 4. Встановіть “PhotoShare”  як Python-пакет :white_check_mark::
     ```
      pip install . 
-    ```      
+    ```
+
+5. Далі встановлюємо poetry (віртуальне оточення) :white_check_mark::
+    ```
+    pip install poetry 
+    ```
+
+6. Оновлюємо залежності встановленних бібліотек :white_check_mark::
+    ```
+    poetry pdate
+    ```
+
+7. Та активуємо віртуальне середовище :white_check_mark::
+    ```
+    poetry shell
+    ```
+
  
 
 ## Налаштування та з'єднання із БД
