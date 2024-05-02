@@ -2,9 +2,9 @@ from tempfile import NamedTemporaryFile
 from fastapi import APIRouter, Depends, status, Query, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database.db import get_db
-from src.database.models import User, Role, TransformedPhoto
+from src.database.models import User, Role
 from src.repository import photos
-from src.schemas.photos import PhotoUpdateSchema
+from src.schemas.photos import PhotoUpdateSchema, PhotoTagsSchema, GetTagsSchema
 from src.services.auth import Auth
 from src.services.roles import RoleAccess
 
@@ -102,3 +102,19 @@ async def get_qr_code(transformed_photo_id: int, db: AsyncSession = Depends(get_
                       user: User = Depends(Auth.get_current_user)):
     qr_code = await photos.generate_qr_code(transformed_photo_id, db, user)
     return qr_code
+
+@router.post("/photos/tags/", response_model=PhotoTagsSchema)
+async def create_photo_tag(tag_name: str, db: AsyncSession = Depends(get_db), user: User = Depends(Auth.get_current_user)):
+    tag = await photos.create_tag(tag_name, db, user)
+    return PhotoTagsSchema(tag_name=tag.tag_name)
+
+@router.post("/photos/{photo_id}/tags/{tag_id}/attach")
+async def attach_tag_to_photo_route(photo_id: int, tag_name: str, db: AsyncSession = Depends(get_db), user: User = Depends(Auth.get_current_user)):
+    photo_tag = await photos.attach_tag_to_photo(photo_id, tag_name, db, user)
+    return {"message": f"Теги {photo_tag} були додани до зображення з ID {photo_id}"}
+
+@router.get("/photos/get_tag/{photo_id}/tags", response_model=GetTagsSchema)
+async def get_photo_tags(photo_id: int, db: AsyncSession = Depends(get_db),
+                         user: User = Depends(Auth.get_current_user)):
+    tags = await photos.get_tags_for_photo(photo_id, db, user)
+    return {"tags": tags}

@@ -26,3 +26,13 @@ class TransformedImageCreate(BaseModel):
     user_id: int
     image_url: str
     transformation: str
+
+
+
+class PhotoTagsSchema(BaseModel):
+    tag_name: str
+
+
+class GetTagsSchema(BaseModel):
+    tags: List[PhotoTagsSchema]
+
