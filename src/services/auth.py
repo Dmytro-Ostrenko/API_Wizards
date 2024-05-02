@@ -97,8 +97,8 @@ class Auth:
     
     @staticmethod
     async def change_user_role(admin_email: str, user_email: str, new_role: str, db: Session = Depends(get_db)):
-        admin_user = await repository_users.get_user_by_email(admin_email, db)
-        if admin_user is None or admin_user.role != Role.admin:
+        admin = await repository_users.get_user_by_email(admin_email, db)
+        if admin is None or admin.role != Role.admin:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only admin can change user roles")
 
         user = await repository_users.get_user_by_email(user_email, db)
