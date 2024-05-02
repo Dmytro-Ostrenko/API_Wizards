@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 import sys
 from pathlib import Path
@@ -7,8 +7,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
+
 from src.schemas.photos import PhotoSchema, PhotoUpdateSchema
-from src.database.models import Photos, User, TransformedPhoto
+from src.database.models import Photos, User, TransformedPhoto, PhotoTags, TagAssociation
 from sqlalchemy.ext.asyncio import AsyncSession
 import cloudinary.uploader
 from src.database.models import Photos
@@ -16,7 +17,12 @@ import qrcode
 import os
 from src.conf.config import config
 
+
 UPLOAD_FOLDER = "uploads"
+
+
+
+
 async def upload_photo(file_path: str, user_id: int, db: AsyncSession):
     cloudinary.config(
         cloud_name=config.cloud_name,
@@ -153,3 +159,57 @@ async def generate_qr_code(transformed_photo_id: int, db: AsyncSession, user: Us
     qr_photo.save(qr_photo_path)
 
     return {"qr_code_url": qr_photo_path}
+
+
+async def create_tag(tag_name: str, db: AsyncSession, user: User):
+    existing_tag = await db.execute(select(PhotoTags).filter_by(tag_name=tag_name))
+    existing_tag = existing_tag.scalar_one_or_none()
+    if not existing_tag:
+        tag = PhotoTags(tag_name=tag_name)
+        db.add(tag)
+        await db.flush()
+        await db.commit()
+    return existing_tag
+
+
+async def attach_tag_to_photo(photo_id: int, tag_name: str, db: AsyncSession, user: User):
+    photo = await db.get(Photos, photo_id)
+    if not photo:
+        raise HTTPException(status_code=404, detail="Photo not found")
+
+    # Проверяем, существует ли тег с заданным именем
+    tag_query = select(PhotoTags).where(PhotoTags.tag_name == tag_name)
+    tag_result = await db.execute(tag_query)
+    tag = tag_result.scalar_one_or_none()
+    if tag is None:
+        raise HTTPException(status_code=404, detail=f"Tag '{tag_name}' not found")
+
+    # Проверяем количество тегов, используя запрос к базе данных
+    count_tags_query = select(func.count()).where(TagAssociation.photo_id == photo_id)
+    count_tags_result = await db.execute(count_tags_query)
+    count_tags = count_tags_result.scalar_one()
+
+    if count_tags >= 5:
+        raise HTTPException(status_code=400, detail="Maximum number of tags reached for this photo")
+
+    # Создаем связь между фотографией и тегом
+    tag_association = TagAssociation(photo_id=photo_id, tag_id=tag.tag_id)
+
+    db.add(tag_association)
+    await db.commit()
+
+    return tag
+
+
+
+
+from sqlalchemy.orm import joinedload
+
+async def get_tags_for_photo(photo_id: int, db: AsyncSession, user: User):
+    photo = await db.execute(
+        select(Photos).filter(Photos.id == photo_id).options(joinedload(Photos.photo_tags))
+    )
+    photo = photo.scalars().first()
+    if not photo:
+        raise HTTPException(status_code=404, detail="Photo not found")
+    return photo.photo_tags
