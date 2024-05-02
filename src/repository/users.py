@@ -14,9 +14,9 @@ from src.schemas.schemas_auth import UserModel
 
 
 async def get_user_by_email(email: str, db: AsyncSession) -> User:
-    stmt = select(User).filter_by(email=email)
-    user = await db.execute(stmt)
-    user = user.scalar_one_or_none()
+    stmt = select(User).filter(User.email==email)
+    result = await db.execute(stmt)
+    user = result.scalar_one_or_none()
     return user
 
 
@@ -87,4 +87,4 @@ async def update_user_role(email: str, new_role: Role, db: AsyncSession) -> User
         user.role = new_role.value
         await db.commit()
         await db.refresh(user)
-    return user
+    return user.role
