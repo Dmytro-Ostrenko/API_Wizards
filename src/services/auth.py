@@ -105,14 +105,10 @@ class Auth:
         if user is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-        role = await repository_roles.get_role_by_name(new_role, db)
-        if role is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
+        user.role = new_role
+        await repository_users.update_user_role(user.email, user.role, db)
 
-        user.role = role
-        await repository_users.update_user_role(user.id, {"role": role.value}, db)
-
-        return {"message": "User role updated successfully"}
+        return {"message": "Role updated successfully"}
 
 auth_service = Auth()
 

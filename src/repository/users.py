@@ -81,10 +81,9 @@ async def get_all_users(db: AsyncSession) -> List[User]:
 
    
 
-async def update_user_role(email: str, new_role: Role, db: AsyncSession) -> User:
+async def update_user_role(email: str, new_role: str, db: AsyncSession) -> User:
     user = await get_user_by_email(email, db)
-    if user:
-        user.role = new_role.value
-        await db.commit()
-        await db.refresh(user)
-    return user.role
+    user.role = new_role
+    await db.commit()
+    await db.refresh(user)
+    return user

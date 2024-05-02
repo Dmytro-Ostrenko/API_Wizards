@@ -57,7 +57,7 @@ async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(sec
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 @router.post("/change_role", response_model=dict)
-async def change_user_role(admin_email: str, user_email: str, new_role: str, db: Session = Depends(get_db)):
+async def change_user_role(admin_email: str, user_email: str, new_role: Role, db: Session = Depends(get_db)):
     try:
         result = await auth_service.change_user_role(admin_email, user_email, new_role, db)
         return {"message": result}
