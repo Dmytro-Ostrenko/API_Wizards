@@ -2,23 +2,30 @@ from fastapi import APIRouter, HTTPException, Depends, status, Security
 from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
+import sys
+from pathlib import Path
+
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from src.database.db import get_db
 from src.schemas.schemas_auth import UserModel, UserResponse, TokenModel
 from src.repository import users as repository_users
 from src.services.auth import auth_service
-
+from src.database.models import Role
 router = APIRouter(prefix='/auth', tags=["auth"])
 security = HTTPBearer()
 
 
-@router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/signup", response_model=UserModel, status_code=status.HTTP_201_CREATED)
 async def signup(body: UserModel, db: Session = Depends(get_db)):
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Account already exists")
+    role = Role.admin if not await repository_users.get_all_users(db) else Role.user
     body.password = auth_service.get_password_hash(body.password)
-    new_user = await repository_users.create_user(body, db)
-    return {"user": new_user, "detail": "User successfully created"}
+    new_user = await repository_users.create_user(body, db, role=role)
+    return new_user
 
 
 @router.post("/login", response_model=TokenModel)
@@ -48,3 +55,11 @@ async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(sec
     refresh_token = await auth_service.create_refresh_token(data={"sub": email})
     await repository_users.update_token(user, refresh_token, db)
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
+@router.post("/change_role", response_model=dict)
+async def change_user_role(admin_email: str, user_email: str, new_role: str, db: Session = Depends(get_db)):
+    try:
+        result = await auth_service.change_user_role(admin_email, user_email, new_role, db)
+        return {"message": result}
+    except HTTPException as e:
+        return {"detail": e.detail}
