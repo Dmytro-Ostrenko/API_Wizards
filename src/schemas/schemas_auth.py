@@ -1,11 +1,21 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 
+
+import sys
+from pathlib import Path
+
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+from typing import Optional
+from src.database.models import Role
+
+
 # Модель для користувача
 class UserModel(BaseModel):
     username: str = Field(min_length=5, max_length=16)
     email: str
-    password: str = Field(min_length=6, max_length=10)
+    password: str = Field(min_length=6, max_length=250)
 
 
 class UserDb(BaseModel):
