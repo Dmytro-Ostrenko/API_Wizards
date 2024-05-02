@@ -18,12 +18,13 @@ from src.database.models import User, Role
 from src.database.db import get_db
 from src.repository import users as repository_users
 from src.repository import roles as repository_roles
+from src.conf.config import config
 
 
 class Auth:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    SECRET_KEY = "974790aec4ac460bdc11645decad4dce7c139b7f2982b7428ec44e886ea588c6"
-    ALGORITHM = "HS256"
+    SECRET_KEY = config.SECRET_KEY_JWT
+    ALGORITHM = config.ALGORITHM
 
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
@@ -66,9 +67,38 @@ class Auth:
         except JWTError:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate credentials')
 
+    # @staticmethod
+    # async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db),
+    #                            roles: List[Role] = None):
+    #     credentials_exception = HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail="Could not validate credentials",
+    #         headers={"WWW-Authenticate": "Bearer"},
+    #     )
+
+    #     try:
+    #         payload = jwt.decode(token, Auth.SECRET_KEY, algorithms=[Auth.ALGORITHM])
+    #         if payload['scope'] == 'access_token':
+    #             email = payload["sub"]
+    #             if email is None:
+    #                 raise credentials_exception
+    #         else:
+    #             raise credentials_exception
+    #     except JWTError as e:
+    #         raise credentials_exception
+
+    #     user = await repository_users.get_user_by_email(email, db)
+    #     if user is None:
+    #         raise credentials_exception
+
+    #     if roles and user.role not in roles:
+    #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
+
+    #     return user
+    
     @staticmethod
     async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db),
-                               roles: List[Role] = None):
+                               role: Role = None):
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -76,6 +106,7 @@ class Auth:
         )
 
         try:
+            # Decode JWT
             payload = jwt.decode(token, Auth.SECRET_KEY, algorithms=[Auth.ALGORITHM])
             if payload['scope'] == 'access_token':
                 email = payload["sub"]
@@ -90,10 +121,12 @@ class Auth:
         if user is None:
             raise credentials_exception
 
-        if roles and user.role not in roles:
+        # Check user role if specified
+        if role and user.role != role:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
 
         return user
+
     
     @staticmethod
     async def change_user_role(admin_email: str, user_email: str, new_role: str, db: Session = Depends(get_db)):
