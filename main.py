@@ -24,25 +24,7 @@ app.include_router(auth.router, prefix="/api")
 app.include_router(photos.router, prefix="/api")
 app.include_router(comments.router, prefix="/api")
 auth_service = Auth()
-
-
-@app.get("/")
-async def home_page(request: Request, db: AsyncSession = Depends(get_db)):
-    # Створення ролей для юзерів
-    roles = ["admin", "moderator", "user"]
-    for current_users in roles:
-        existing_role = db.query(Role).filter(Role.role == current_users).first()
-        if not existing_role:
-            db.add(Role(role=current_users))
-    db.commit()
     
-    # # Створення адміна першим
-    # admin_role = db.query(Role).filter(Role.role == "admin").first()
-    # if not admin_role:
-    #     admin_role = Role(role="admin")
-    #     db.add(admin_role)
-    #     db.commit()
-        
 
 
 
