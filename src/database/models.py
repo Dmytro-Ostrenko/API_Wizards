@@ -15,6 +15,11 @@ class Role(enum.Enum):
     user = "user"
 
 
+class PhotoTags(Base):
+    __tablename__ = "photo_tags"
+    tag_id = Column(Integer, primary_key=True, unique=True)
+    tag_name = Column(String(50), unique=True)
+
 class Photos(Base):
     __tablename__ = "photos"
     id = Column(Integer, primary_key=True, unique=True)
@@ -25,13 +30,20 @@ class Photos(Base):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     user = relationship("User", back_populates="user_photo")
-    tags = relationship("Tags", secondary="photo_tags", back_populates="photos")
+    photo_tags = relationship("PhotoTags", secondary="tag_association")
     comments = relationship("Comments", back_populates="photo")
-    photo_tags = relationship("PhotoTags")
     __table_args__ = (
         UniqueConstraint('photo_link', name='unique_photo_link'),
     )
 
+
+class TagAssociation(Base):
+    __tablename__ = "tag_association"
+    photo_id = Column(Integer, ForeignKey('photos.id'), primary_key=True)
+    tag_id = Column(Integer, ForeignKey('photo_tags.tag_id'), primary_key=True)
+
+    photo = relationship("Photos", backref="tags_association")
+    tag = relationship("PhotoTags", backref="photos_association")
 
 class User(Base):
     __tablename__ = 'users'
@@ -50,17 +62,6 @@ class User(Base):
     user_photo = relationship("Photos", back_populates="user")
     user_comments = relationship("Comments", back_populates="user")
 
-
-
-class Tags(Base):
-    __tablename__ = "tags"
-    id = Column(Integer, primary_key=True, unique=True)
-    tag_name = Column(String(150), primary_key=True, unique=True)
-    photos = relationship("Photos", secondary="photo_tags", back_populates="tags")
-    photo_tags = relationship("PhotoTags", back_populates="tag")
-
-
-
 class Comments(Base):
     __tablename__ = "comments"
     id = Column(Integer, primary_key=True, unique=True)
@@ -73,12 +74,6 @@ class Comments(Base):
     photo = relationship("Photos", back_populates="comments")
     user = relationship("User", back_populates="user_comments")
 
-class PhotoTags(Base):
-    __tablename__ = "photo_tags"
-    photo_id = Column(Integer, ForeignKey('photos.id'), primary_key=True)
-    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key=True)
-    photo = relationship("Photos", back_populates="photo_tags")
-    tag = relationship("Tags", back_populates="photo_tags")
 
 class TransformedPhoto(Base):
     __tablename__ = "transformed_photos"
