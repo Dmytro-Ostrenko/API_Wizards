@@ -3,6 +3,12 @@ from typing import List
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
+import sys
+from pathlib import Path
+
+# Добавляем корневую папку проекта в sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from . import models, schemas
 
 def get_comments(db: Session, photo_id: int) -> List[schemas.Comment]:
