@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
@@ -6,32 +8,20 @@ app = FastAPI()
 
 # Модель для коментаря
 class Comment(BaseModel):
-    text: str
-    username: Optional[str] = None
-    timestamp: Optional[int] = None
+    id: int
+    user_id: int
+    photo_id: int
+    created_at: datetime
+    updated_at: datetime
+    description: str
 
-# Список для зберігання коментарів
-comments: List[Comment] = []
+    class Config:
+        orm_mode = True
 
-@app.post("/comments/", response_model=Comment)
-async def create_comment(comment: Comment):
-    comments.append(comment)
-    return comment
+class CommentCreate(BaseModel):
+    description: str
+    user_id: int
+    photo_id: int
 
-@app.get("/comments/", response_model=List[Comment])
-async def get_comments():
-    return comments
-
-@app.put("/comments/{comment_id}", response_model=Comment)
-async def update_comment(comment_id: int, comment: Comment):
-    if comment_id >= len(comments):
-        raise HTTPException(status_code=404, detail="Коментар не знайдено")
-    comments[comment_id] = comment
-    return comment
-
-@app.delete("/comments/{comment_id}")
-async def delete_comment(comment_id: int):
-    if comment_id >= len(comments):
-        raise HTTPException(status_code=404, detail="Коментар не знайдено")
-    del comments[comment_id]
-    return {"detail": "Коментар видалено"}
+class CommentUpdateSchema(BaseModel):
+    description: str
