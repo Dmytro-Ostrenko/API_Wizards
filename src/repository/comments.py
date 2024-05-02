@@ -3,6 +3,12 @@ from typing import List
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
+import sys
+from pathlib import Path
+
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from src.database import models 
 from src.schemas import schemas_comments
 

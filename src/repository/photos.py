@@ -1,5 +1,12 @@
 from fastapi import HTTPException
 from sqlalchemy import select
+
+import sys
+from pathlib import Path
+
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from src.schemas.photos import PhotoSchema, PhotoUpdateSchema
 from src.database.models import Photos, User, TransformedPhoto
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,12 +16,7 @@ import qrcode
 import os
 from src.conf.config import config
 
-
 UPLOAD_FOLDER = "uploads"
-
-
-
-
 async def upload_photo(file_path: str, user_id: int, db: AsyncSession):
     cloudinary.config(
         cloud_name=config.cloud_name,
