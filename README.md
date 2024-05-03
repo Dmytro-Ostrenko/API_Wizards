@@ -1,5 +1,5 @@
 #  <p align="center">:robot:  API_Wizards:robot:  </p>     
-# <p align="center">*Інструкція з встановлення та користування  застосунком “PhotoShare” (REST API)*</p>
+# <p align="center"> *:smiley_cat: Мова читання - українська. Інструкція з встановлення та користування  застосунком “PhotoShare” (REST API)*</p>
 ## Передумови
 
 Переконайтеся, що на вашому комп'ютері встановлено Python версії 3.11 або новіше. Ви можете завантажити Python з [офіційного сайту](https://www.python.org/downloads/).
@@ -20,24 +20,22 @@ git clone https://github.com/Dmytro-Ostrenko/API_Wizards
 cd API_Wizards
 ```
 
-
-
-4. Встановіть “PhotoShare”  як Python-пакет :white_check_mark::
+3. Встановіть “PhotoShare”  як Python-пакет :white_check_mark::
 ```
 pip install . 
 ```
 
-5. Далі встановлюємо poetry (віртуальне оточення) :white_check_mark::
+4. Далі встановлюємо poetry (віртуальне оточення) :white_check_mark::
 ```
 pip install poetry 
 ```
 
-6. Оновлюємо залежності встановленних бібліотек :white_check_mark::
+5. Оновлюємо залежності встановленних бібліотек :white_check_mark::
 ```
 poetry pdate
 ```
 
-7. Та активуємо віртуальне середовище :white_check_mark::
+6. Та активуємо віртуальне середовище :white_check_mark::
 ```
 poetry shell
 ```
@@ -53,7 +51,7 @@ poetry shell
 ```
 docker compose up -d
 ```
-Вірн налаштування з'єднання у DBeaver потребує вказати значення: 
+Вірно налаштування з'єднання у DBeaver потребує вказати значення: 
 - name DB
 - user
 - password
@@ -297,3 +295,323 @@ uvicorn main:app --reload
 - sharpen: Підвищує різкість зображення.
 - hue: Змінює тон кольору на зображенні.
 - invert: Інвертує кольори на зображенні.
+
+:ghost:    Примітка:Слідкуйте за інструкціями програми та вводьте дані у відповідному форматі.
+------
+
+
+
+#  <p align="center">:robot:  API_Wizards:robot:  </p>     
+# <p align="center"> *:smiley_cat: Reading language - English. Instructions for installing and using the “PhotoShare” application (REST API)*</p>
+## Introduction
+
+Welcome to API_Wizards! This is a REST API application called "PhotoShare". 
+
+## Prerequisites
+
+Make sure you have Python version 3.11 or newer installed on your computer. You can download Python from the [official website](https://www.python.org/downloads/).
+
+## Installation
+
+Before you start using the "PhotoShare" application, you need to install it. Follow these steps:
+
+1. Clone the repository to your computer:
+
+```
+git clone https://github.com/Dmytro-Ostrenko/API_Wizards
+```
+
+2. Navigate to the project directory :white_check_mark::    
+
+```
+cd API_Wizards
+```
+
+3. Install "PhotoShare" as a Python package :white_check_mark::
+```
+pip install . 
+```
+
+4. Next, install poetry (virtual environment) :white_check_mark::
+```
+pip install poetry 
+```
+
+5. Update the dependencies of installed libraries :white_check_mark::
+```
+poetry pdate
+```
+
+6. Then activate the virtual environment :white_check_mark::
+```
+poetry shell
+```
+
+Now you're all set to use the "PhotoShare" application! Enjoy sharing photos with ease.
+
+## Setting up and connecting to the database
+
+Before working with the database, make sure you have the following programs installed and updated to the latest version:
+
+* DockerDesktop (download link from the [official website](https://www.docker.com/products/docker-desktop/))
+* DBeaver (download link from the [official website](https://dbeaver.io/download/))
+
+After opening DBeaver and DockerDesktop, first, configure the connection and start the container in DockerDesktop. For this purpose, a `docker-compose.yml` file has already been created. Execute the following command to start the container:
+```
+docker compose up -d
+```
+Proper configuration of the connection in DBeaver requires specifying the following values: 
+- name DB
+- user
+- password
+- ports
+ 
+Since the project already contains a pre-created database (located in migrations/versions), we skip the step of creating it. This is handled by the command :white_check_mark::
+```
+alembic revision --autogenerate -m 'Init'
+```
+
+After configuring the connection correctly, execute the following command to update the database :white_check_mark::
+```
+alembic upgrade head
+```
+
+Finally, to start FastAPI, execute the following command :white_check_mark::
+```
+uvicorn main:app --reload   
+``` 
+Once done, the application "PhotoShare" will be accessible at: http://127.0.0.1:8000. Additionally, you can access the Swagger documentation at: http://127.0.0.1:8000/docs.
+
+## Working with the "PhotoShare" application
+
+### Authorization in the application:
+
+#### Registration
+
+- **Description**: Register a new user.
+- **Path**: `/auth/signup`
+- **Method**: `POST`
+- **Input Parameters**:
+  - `username`: Username of the new user (required field).
+  - `email`: Email of the new user (required field).
+  - `password`: Password (required field).
+- **Result**: Creates a new user in the database.
+
+#### Login
+
+- **Description**: Authorization of an existing user.
+- **Path**: `/auth/login`
+- **Method**: `POST`
+- **Input Parameters**:
+  - `email`: Email of the existing user (required field).
+  - `password`: Password (required field).
+- **Result**: Authorizes the user in the system, determines their role, and provides corresponding functionality in the application.
+
+#### Changing user roles (functionality available only to administrators)
+
+- **Description**: Authorization of an existing user.
+- **Path**: `/auth/change_role`
+- **Method**: `POST`
+- **Input Parameters**:
+  - `admin_email`: Administrator's email (required field).
+  - `user_email`: Email of the user whose role will be changed (required field).
+  - `new_role`: New role in the database (required field).
+- **Result**: Changes the user's role.
+
+### Managing Photos in the Application:
+
+#### Uploading a Photo
+
+- **Description**: Upload a new image.
+- **Path**: `/photos/`
+- **Method**: `POST`
+- **Input Parameters**:
+    - `file`: Image file to upload (required field).
+- **Result**: The image is successfully uploaded to the system.
+
+#### Updating Photo Description
+
+- **Description**: Update the description of an existing image.
+- **Path**: `/photos/{photo_id}`
+- **Method**: `PUT`
+- **Input Parameters**:
+    - `body`: Request body with the new photo description.
+    - `photo_id`: ID of the image to update (required field).
+    - `description`: New description for the image (required field).
+- **Result**: The image description is successfully updated.
+
+#### Deleting a Photo
+
+- **Description**: Delete an existing image.
+- **Path**: `/photos/{photo_id}`
+- **Method**: `DELETE`
+- **Input Parameters**:
+    - `photo_id`: ID of the image to delete (required field).
+- **Result**: The image is successfully deleted from the system.
+
+#### Getting Information about a Photo
+
+- **Description**: Retrieve information about an existing image.
+- **Path**: `/photos/`
+- **Method**: `GET`
+- **Input Parameters**:
+    - `url`: URL of the image to retrieve information for (required field).
+- **Result**: Information about the image.
+
+#### Resizing a Photo
+
+- **Description**: Resize an existing image.
+- **Path**: `/photos/resize`
+- **Method**: `POST`
+- **Input Parameters**:
+    - `url`: URL of the image to resize (required field).
+    - `width`: New width of the image.
+    - `height`: New height of the image.
+- **Result**: The image is resized according to the specified parameters.
+
+#### Cropping a Photo
+
+- **Description**: Crop an existing image.
+- **Path**: `/photos/crop`
+- **Method**: `POST`
+- **Input Parameters**:
+    - `url`: URL of the image to crop (required field).
+    - `width`: Width of the new image.
+    - `height`: Height of the new image.
+- **Result**: The image is cropped according to the specified parameters.
+
+#### Applying Filter and Text to a Photo
+
+- **Description**: Apply a filter and text to an existing image.
+- **Path**: `/photos/apply-filter-text`
+- **Method**: `POST`
+- **Input Parameters**:
+    - `url`: URL of the image to apply the filter and text to (required field).
+    - `filter_name`: Name of the filter to apply.
+    - `text`: Text to add to the image.
+    - `font_family`: Font family of the text.
+    - `font_size`: Font size of the text.
+    - `font_color`: Font color of the text.
+- **Result**: The filter and text are successfully applied to the image.
+
+#### Converting Photo Format
+
+- **Description**: Convert an existing image to another format.
+- **Path**: `/photos/convert-format`
+- **Method**: `POST`
+- **Input Parameters**:
+    - `url`: URL of the image to convert (required field).
+    - `new_format`: New format of the image.
+- **Result**: The image is converted to the new format.
+
+#### Getting Photo Metadata
+
+- **Description**: Retrieve metadata about an existing image.
+- **Path**: `/photos/get-metadata`
+- **Method**: `POST`
+- **Input Parameters**:
+    - `url`: URL of the image to retrieve metadata for (required field).
+- **Result**: Metadata about the image.
+
+#### Getting a Link to the Transformed Photo
+
+- **Description**: Retrieve a link to an existing transformed image.
+- **Path**: `/photos/{transformed_photo_id}`
+- **Method**: `GET`
+- **Input Parameters**:
+    - `transformed_photo_id`: ID of the transformed image.
+- **Result**: A link to the transformed image.
+
+#### Getting a QR Code for a Photo
+
+- **Description**: Generate a QR code for an existing image.
+- **Path**: `/photos/get_qr_code/{transformed_photo_id}/`
+- **Method**: `GET`
+- **Input Parameters**:
+    - `transformed_photo_id`: ID of the transformed image.
+- **Result**: QR code for the image.
+
+### Managing Comments on Photos:
+
+#### Creating a Comment
+
+- **Description**: Create a new comment on a photo.
+- **Path**: `/comments/`
+- **Method**: `POST`
+- **Input Parameters**:
+    - `comment`: Comment object containing the comment text, photo ID, and user ID (required field).
+    - `photo_id`: ID of the photo to which the comment is added (required field).
+    - `user_id`: ID of the user adding the comment (required field).
+- **Result**: The comment is successfully created.
+
+#### Getting Comments on a Photo
+
+- **Description**: Get comments on a specific photo.
+- **Path**: `/comments/{photo_id}/comments`
+- **Method**: `GET`
+- **Input Parameters**:
+    - `photo_id`: ID of the photo for which comments are retrieved (required field).
+- **Result**: Comments on the photo.
+
+#### Updating a Comment
+
+- **Description**: Update an existing comment.
+- **Path**: `/comments/{comment_id}`
+- **Method**: `PUT`
+- **Input Parameters**:
+    - `comment_id`: ID of the comment to update (required field).
+    - `comment`: Comment object with the new comment text (required field).
+- **Result**: The comment is successfully updated.
+
+#### Deleting a Comment
+
+- **Description**: Delete an existing comment.
+- **Path**: `/comments/{comment_id}`
+- **Method**: `DELETE`
+- **Input Parameters**:
+    - `comment_id`: ID of the comment to delete (required field).
+- **Result**: The comment is successfully deleted.
+
+## Project Structure of the "PhotoShare" Application
+
+- `main.py`: the main program file containing FastAPI routes.
+  - `src/`: directory containing the application logic.
+  - `src/conf/`: directory containing the application configurations.
+  - `src/database/`: directory with database configurations and models.
+  - `src/repository/`: directory with repository classes for interacting with the database.
+  - `src/routes/`: directory containing FastAPI router modules.
+  - `src/schemas/`: schemas used for data validation and interaction within the software.
+  - `src/services/`: files related to business logic and software functionality.
+- `pyproject.toml`: Poetry configuration file containing project dependencies.
+- `docker-compose.yml`: Docker Compose configuration file used to define and configure multi-container applications. The file contains descriptions of services composing the application as well as Docker container environment setup parameters.
+- `.env`: text file containing environment variables for application configuration.
+- `migrations`: directory storing migration files for the database.
+
+## P.S. Additional Information
+
+### Filter Names for Image Processing in Cloudinary and Their Functions:
+
+- grayscale: Converts the image to grayscale.
+- sepia: Adds a vintage effect to the image.
+- blackwhite: Converts the image to high-contrast black and white.
+- saturation: Controls the color saturation in the image.
+- brightness: Adjusts the brightness of the image.
+- contrast: Controls the contrast between colors in the image.
+- blur: Blurs the image, creating a blur effect.
+- sharpen: Increases the sharpness of the image.
+- hue: Changes the color tone in the image.
+- invert: Inverts the colors in the image.
+
+:ghost: Note: Follow the program instructions and enter data in the appropriate format.
+------
+
+
+
+
+
+
+
+
+
+
+
