@@ -25,7 +25,7 @@ UPLOAD_FOLDER = "uploads"
 
 
 
-async def upload_photo(file_path: str, user_id: int, db: AsyncSession, user: User):
+async def upload_photo(file_path: str, user_id: int, db: AsyncSession):
     cloudinary.config(
         cloud_name=config.cloud_name,
         api_key=config.api_key,
@@ -34,8 +34,6 @@ async def upload_photo(file_path: str, user_id: int, db: AsyncSession, user: Use
     response = cloudinary.uploader.upload(file_path)
     photo_url = response['url']
     photo = Photos(photo_link=photo_url, user_id=user_id)
-    if (user.role != Role.admin and photo.user_id != user.id):
-        raise HTTPException(status_code=403, detail="Доступ запрещен")
     db.add(photo)
     await db.commit()
 
