@@ -297,7 +297,9 @@ uvicorn main:app --reload
 - invert: Інвертує кольори на зображенні.
 
 :ghost:    Примітка:Слідкуйте за інструкціями програми та вводьте дані у відповідному форматі.
----
+------
+
+
 
 #  <p align="center">:robot:  API_Wizards:robot:  </p>     
 # <p align="center"> *:smiley_cat: Reading language - English. Instructions for installing and using the “PhotoShare” application (REST API)*</p>
