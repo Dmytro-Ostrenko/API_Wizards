@@ -603,6 +603,7 @@ Once done, the application "PhotoShare" will be accessible at: http://127.0.0.1:
 - invert: Inverts the colors in the image.
 
 :ghost: Note: Follow the program instructions and enter data in the appropriate format.
+------
 
 
 
