@@ -1,5 +1,5 @@
 #  <p align="center">:robot:  API_Wizards:robot:  </p>     
-# <p align="center"> :smiley_cat: Мова читання (українська) *Інструкція з встановлення та користування  застосунком “PhotoShare” (REST API)*</p>
+# <p align="center"> *:smiley_cat: Мова читання - українська. Інструкція з встановлення та користування  застосунком “PhotoShare” (REST API)*</p>
 ## Передумови
 
 Переконайтеся, що на вашому комп'ютері встановлено Python версії 3.11 або новіше. Ви можете завантажити Python з [офіційного сайту](https://www.python.org/downloads/).
@@ -20,24 +20,22 @@ git clone https://github.com/Dmytro-Ostrenko/API_Wizards
 cd API_Wizards
 ```
 
-
-
-4. Встановіть “PhotoShare”  як Python-пакет :white_check_mark::
+3. Встановіть “PhotoShare”  як Python-пакет :white_check_mark::
 ```
 pip install . 
 ```
 
-5. Далі встановлюємо poetry (віртуальне оточення) :white_check_mark::
+4. Далі встановлюємо poetry (віртуальне оточення) :white_check_mark::
 ```
 pip install poetry 
 ```
 
-6. Оновлюємо залежності встановленних бібліотек :white_check_mark::
+5. Оновлюємо залежності встановленних бібліотек :white_check_mark::
 ```
 poetry pdate
 ```
 
-7. Та активуємо віртуальне середовище :white_check_mark::
+6. Та активуємо віртуальне середовище :white_check_mark::
 ```
 poetry shell
 ```
@@ -297,3 +295,59 @@ uvicorn main:app --reload
 - sharpen: Підвищує різкість зображення.
 - hue: Змінює тон кольору на зображенні.
 - invert: Інвертує кольори на зображенні.
+
+:ghost:    Примітка:Слідкуйте за інструкціями програми та вводьте дані у відповідному форматі.
+---
+
+#  <p align="center">:robot:  API_Wizards:robot:  </p>     
+# <p align="center"> *:smiley_cat: Reading language - English. Instructions for installing and using the “PhotoShare” application (REST API)*</p>
+## Introduction
+
+Welcome to API_Wizards! This is a REST API application called "PhotoShare". 
+
+## Prerequisites
+
+Make sure you have Python version 3.11 or newer installed on your computer. You can download Python from the [official website](https://www.python.org/downloads/).
+
+## Installation
+
+Before you start using the "PhotoShare" application, you need to install it. Follow these steps:
+
+1. Clone the repository to your computer:
+
+```
+git clone https://github.com/Dmytro-Ostrenko/API_Wizards
+```
+
+2. Navigate to the project directory :white_check_mark::    
+
+```
+cd API_Wizards
+```
+
+3. Install "PhotoShare" as a Python package :white_check_mark::
+```
+pip install . 
+```
+
+4. Next, install poetry (virtual environment) :white_check_mark::
+```
+pip install poetry 
+```
+
+5. Update the dependencies of installed libraries :white_check_mark::
+```
+poetry pdate
+```
+
+6. Then activate the virtual environment :white_check_mark::
+```
+poetry shell
+```
+
+Now you're all set to use the "PhotoShare" application! Enjoy sharing photos with ease.
+
+
+
+
+
