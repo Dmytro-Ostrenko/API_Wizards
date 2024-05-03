@@ -353,3 +353,43 @@ Now you're all set to use the "PhotoShare" application! Enjoy sharing photos wit
 
 
 
+
+## Setting up and connecting to the database
+
+Before working with the database, make sure you have the following programs installed and updated to the latest version:
+
+* DockerDesktop (download link from the [official website](https://www.docker.com/products/docker-desktop/))
+* DBeaver (download link from the [official website](https://dbeaver.io/download/))
+
+After opening DBeaver and DockerDesktop, first, configure the connection and start the container in DockerDesktop. For this purpose, a `docker-compose.yml` file has already been created. Execute the following command to start the container:
+```
+docker compose up -d
+```
+Proper configuration of the connection in DBeaver requires specifying the following values: 
+- name DB
+- user
+- password
+- ports
+
+Since the project already contains a pre-created database (located in migrations/versions), we skip the step of creating it. This is handled by the command:
+```
+alembic revision --autogenerate -m 'Init'
+```
+
+After configuring the connection correctly, execute the following command to update the database :white_check_mark::
+```
+alembic upgrade head
+```
+
+Finally, to start FastAPI, execute the following command :white_check_mark::
+```
+uvicorn main:app --reload   
+``` 
+Once done, the application "PhotoShare" will be accessible at: http://127.0.0.1:8000. Additionally, you can access the Swagger documentation at: http://127.0.0.1:8000/docs.
+
+
+
+
+
+
+
