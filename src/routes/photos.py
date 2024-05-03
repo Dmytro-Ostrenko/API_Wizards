@@ -13,12 +13,12 @@ from src.database.models import User, Role
 from src.repository import photos
 from src.schemas.photos import PhotoUpdateSchema, PhotoTagsSchema, GetTagsSchema
 from src.services.auth import Auth
-from src.services.roles import RoleAccess
+
 
 from fastapi import HTTPException
 router = APIRouter(prefix='/photos', tags=['photos'])
 
-access_to_route_all = RoleAccess([Role.admin, Role.moderator])
+
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def upload_photo_route(file: UploadFile = File(...), db: AsyncSession = Depends(get_db),
@@ -30,9 +30,8 @@ async def upload_photo_route(file: UploadFile = File(...), db: AsyncSession = De
 
     return {"message": "Зображення було успішно завантажено"}
 
-
 @router.put("/photos/{photo_id}")
-async def update_photo(body: PhotoUpdateSchema, photo_id: int, description: str, db: AsyncSession = Depends(get_db),
+async def update_photo(body: PhotoUpdateSchema, photo_id: int, db: AsyncSession = Depends(get_db),
                        user: User = Depends(Auth.get_current_user)):
     photo = await photos.update_photo(photo_id, body, db, user)
     if photo is None:
@@ -43,13 +42,15 @@ async def update_photo(body: PhotoUpdateSchema, photo_id: int, description: str,
 async def delete_image(photo_id: int, db: AsyncSession = Depends(get_db),
                        user: User = Depends(Auth.get_current_user)):
     photo = await photos.delete_photo(photo_id, db, user)
-    return {"message": f"Зображення з ідентифікатором {photo_id} було успішно видалено"}
 
+    return {"message": f"Зображення з ідентифікатором {photo_id} було успішно видалено"}
 
 @router.get("/photos/")
 async def get_image(url: str = Query(...), db: AsyncSession = Depends(get_db),
                     user: User = Depends(Auth.get_current_user)):
     photo = await photos.get_photo_by_url(url, db, user)
+    if (user.role != Role.admin and photo.user_id != user.id):
+        raise HTTPException(status_code=403, detail="Доступ запрещен")
     if photo:
         return {"title": f"Зображення з унікальним посиланням",
                 "description": photo.description,
@@ -59,17 +60,12 @@ async def get_image(url: str = Query(...), db: AsyncSession = Depends(get_db),
     else:
         raise HTTPException(status_code=404, detail="Зображення не знайдено")
 
-
-
 @router.post("/photos/resize", status_code=status.HTTP_200_OK)
 async def resize_photo(url: str, width: int, height: int, db: AsyncSession = Depends(get_db),
                        user: User = Depends(Auth.get_current_user)):
     result = await photos.resize_photo(url, width, height, db, user)
     resized_photo = result['resized_url']
-
     return {"resized_photo": resized_photo}
-
-
 
 @router.post("/photos/crop", status_code=status.HTTP_200_OK)
 async def crop_photo(url: str, width: int, height: int, db: AsyncSession = Depends(get_db),
@@ -118,7 +114,7 @@ async def create_photo_tag(tag_name: str, db: AsyncSession = Depends(get_db), us
 @router.post("/photos/{photo_id}/tags/{tag_id}/attach")
 async def attach_tag_to_photo_route(photo_id: int, tag_name: str, db: AsyncSession = Depends(get_db), user: User = Depends(Auth.get_current_user)):
     photo_tag = await photos.attach_tag_to_photo(photo_id, tag_name, db, user)
-    return {"message": f"Теги {photo_tag} були додани до зображення з ID {photo_id}"}
+    return {"message": f"Теги {photo_tag} були додані до зображення з ID {photo_id}"}
 
 @router.get("/photos/get_tag/{photo_id}/tags", response_model=GetTagsSchema)
 async def get_photo_tags(photo_id: int, db: AsyncSession = Depends(get_db),
