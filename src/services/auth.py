@@ -68,7 +68,7 @@ class Auth:
 
     @staticmethod
     async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db),
-                               roles: List[Role] = None):
+                               role: Role = None):
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -90,7 +90,7 @@ class Auth:
         if user is None:
             raise credentials_exception
 
-        if roles and user.role not in roles:
+        if role and user.role != role:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
 
         return user
