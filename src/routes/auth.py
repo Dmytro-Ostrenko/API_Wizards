@@ -13,7 +13,7 @@ from src.schemas.schemas_auth import UserModel, UserResponse, TokenModel
 from src.repository import users as repository_users
 from src.services.auth import auth_service
 from src.database.models import Role
-router = APIRouter(prefix='/auth', tags=["auth"])
+router = APIRouter(prefix='/auth', tags=['auth'])
 security = HTTPBearer()
 
 
