@@ -55,27 +55,34 @@ async def create_comment(comment: schemas_comments.CommentCreate, photo_id: int,
 async def update_comment(comment_id: int, comment: schemas_comments.CommentUpdateSchema, db: AsyncSession, user: User):
     """
     The update_comment function updates a comment in the database.
-        Args:
-            comment_id (int): The id of the comment to be updated.
-            comment (schemas_comments.CommentUpdateSchema): The new description for the specified Comment object.
-            db (AsyncSession): An async session with an open connection to a PostgreSQL database server, as defined in main().
-            user (User): A User object containing information about who is making this request, as defined by FastAPI's @get_current_user() decorator and passed into this function by its parent function update().
+        It takes in an integer representing the id of the comment to be updated,
+        and a CommentUpdateSchema object containing information about what should be updated.
+        
+        The function first checks if there is a comment with that id, and if not it raises an HTTPException with status code 404 (Not Found).
+        
+        If there is such a comment, then it checks whether or not this user has permission to update this particular post.  If they do not have permission, then it raises an HTTPException with status code 403 (Forbidden). 
     
-    :param comment_id: int: Identify the comment that is being updated
-    :param comment: schemas_comments.CommentUpdateSchema: Get the comment from the request body
-    :param db: AsyncSession: Pass the database session to the function
+    :param comment_id: int: Find the comment that needs to be updated
+    :param comment: schemas_comments.CommentUpdateSchema: Update the comment
+    :param db: AsyncSession: Connect to the database
     :param user: User: Check if the user is the owner of the comment
-    :return: A comment object, which is a sqlalchemy model
-
+    :return: A comment object
+    :doc-author: Trelent
     """
     getting = select(Comments).filter(Comments.id == comment_id)
     result = await db.execute(getting)
     db_comment = result.scalar_one_or_none()
+    
     if db_comment:
+        if db_comment.user_id != user.id:
+            raise HTTPException(status_code=403, detail="You do not have permission to update this comment")
+        
         db_comment.description = comment.description
-    await db.commit()
-    await db.refresh(db_comment)
-    return db_comment
+        await db.commit()
+        await db.refresh(db_comment)
+        return db_comment
+    else:
+        raise HTTPException(status_code=404, detail="Comment not found")
 
 async def delete_comment(comment_id: int, db: AsyncSession, user: User):
     """
