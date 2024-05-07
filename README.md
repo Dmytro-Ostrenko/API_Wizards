@@ -33,7 +33,7 @@ pip install poetry
 
 5. Оновлюємо залежності встановленних бібліотек :white_check_mark::
 ```
-poetry pdate
+poetry update
 ```
 
 6. Та активуємо віртуальне середовище :white_check_mark::
@@ -341,7 +341,7 @@ pip install poetry
 
 5. Update the dependencies of installed libraries :white_check_mark::
 ```
-poetry pdate
+poetry update
 ```
 
 6. Then activate the virtual environment :white_check_mark::
