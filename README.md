@@ -41,7 +41,7 @@ poetry update
 poetry shell
 ```
 
-Або можна швидко [скачати](https://github.com/Dmytro-Ostrenko/API_Wizards/archives/refs/heads/main.zip) або [клонувати](https://github.com/Dmytro-Ostrenko/API_Wizards.git) 
+Або можна швидко [скачати](https://github.com/Dmytro-Ostrenko/API_Wizards/archive/refs/heads/main.zip) або [клонувати](https://github.com/Dmytro-Ostrenko/API_Wizards.git) 
 
 ##  <p align="center">Налаштування та з'єднання із БД</p>     
 Для початку роботи із БД переконайтесь, що у Вас встановлено та оновлені до останньої версії наступні програми:
