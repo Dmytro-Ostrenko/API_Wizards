@@ -16,14 +16,13 @@ class PhotoSchema(BaseModel):
     description: str = Field(min_length=3, max_length=250)
     tags: List[str] = Field(max_length=5)
 
-class PhotoUpdateSchema(PhotoSchema):
-    completed: bool
+class PhotoUpdateSchema(BaseModel):
+    description: str = Field(min_length=3, max_length=250)
 
 class PhotoResponse(BaseModel):
     id: int = 1
     title: str
     description: str
-    completed: bool
     created_at: datetime | None
     updated_at: datetime | None
     user: UserResponse | None
