@@ -1,18 +1,20 @@
-from fastapi import APIRouter, HTTPException, Depends, status, Security
+from fastapi import APIRouter, HTTPException, Depends, status, Path, Query, Security, BackgroundTasks, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 import sys
 from pathlib import Path
 
-# Добавляем корневую папку проекта в sys.path
+# Додаємо корневу папку проекту в sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from src.database.db import get_db
 from src.schemas.schemas_auth import UserModel, UserResponse, TokenModel
+from src.schemas.user import UserSchema, TokenSchema, UserResponse, TokenSchema, RequestEmail
 from src.repository import users as repository_users
 from src.services.auth import auth_service
 from src.database.models import Role
+from src.services.email import send_email
 router = APIRouter(prefix='/auth', tags=['auth'])
 security = HTTPBearer()
 
@@ -27,12 +29,37 @@ async def signup(body: UserModel, db: Session = Depends(get_db)):
     new_user = await repository_users.create_user(body, db, role=role)
     return new_user
 
+@router.get('/confirmed_email/{token}')
+async def confirmed_email(token: str, db: Session = Depends(get_db)):
+    email = await auth_service.get_email_from_token(token)
+    user = await repository_users.get_user_by_email(email, db)
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Verification error")
+    if user.confirmed:
+        return {"message": "Your email is already confirmed"}
+    await repository_users.confirmed_email(email, db)
+    return {"message": "Email confirmed"}
+
+
+@router.post('/request_email')
+async def request_email(body: RequestEmail, background_tasks: BackgroundTasks, request: Request,
+                        db: Session = Depends(get_db)):
+    user = await repository_users.get_user_by_email(body.email, db)
+
+    if user.confirmed:
+        return {"message": "Your email is already confirmed"}
+    if user:
+        background_tasks.add_task(send_email, user.email, user.username, str(request.base_url))
+    return {"message": "Check your email for confirmation."}
+
 
 @router.post("/login", response_model=TokenModel)
 async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = await repository_users.get_user_by_email(body.username, db)
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email")
+    if not user.confirmed:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Email not confirmed")
     if not auth_service.verify_password(body.password, user.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
     # Generate JWT
