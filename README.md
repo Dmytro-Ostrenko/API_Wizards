@@ -111,6 +111,25 @@ uvicorn main:app --reload
  - `new_role`: Нова роль у БД (обов’язкове поле).
 - **Результат**: Змінює роль користувача.
 
+### Запит на підтвердження пошти
+
+- **Опис**: Відправлення запиту на підтвердження пошти для підтвердження облікового запису користувача.
+- **Шлях**: `/auth/request_email`
+- **Метод**: `POST`
+- **Вхідні Параметри**:
+    - `email`: Пошта користувача, для якого потрібно відправити запит на підтвердження пошти (обов’язкове поле).
+- **Результат**: Відправляє листа на вказану поштову скриньку користувача з посиланням для підтвердження пошти. Якщо адреса вже підтверджена, повертає повідомлення "Вашу пошту вже підтверджено".
+
+### Підтвердження пошти за допомогою токену
+
+- **Опис**: Підтвердження пошти користувача за допомогою токену, отриманого на пошту.
+- **Шлях**: `/auth/confirmed_email/{token}`
+- **Метод**: `GET`
+- **Вхідні Параметри**:
+    - `token`: Унікальний токен, який був надісланий на поштову скриньку користувача (обов’язкове поле).
+- **Результат**: Підтверджує адресу електронної пошти користувача. Якщо адреса вже підтверджена, повертає повідомлення "Ваша електронна адреса вже підтверджена".
+
+
 ### Примітка:
 Аутентифікація та авторизація: Відбувається реєстрація нового користувача. Далі відбуваэться підтвердження пошти. Перший користувач у системі - "адміністратор", решта за замовчанням має роль "користувача". Роль може змінити "адміністратор".
 
@@ -419,6 +438,27 @@ Once done, the application "PhotoShare" will be accessible at: http://127.0.0.1:
   - `user_email`: Email of the user whose role will be changed (required field).
   - `new_role`: New role in the database (required field).
 - **Result**: Changes the user's role.
+
+### Request Email Confirmation
+
+- **Description**: Sends a request for email confirmation to verify the user's account.
+- **Path**: `/auth/request_email`
+- **Method**: `POST`
+- **Input Parameters**:
+    - `email`: The user's email to send the email confirmation request to (required).
+- **Result**: Sends an email to the specified user's email address with a link for email confirmation. If the address is already confirmed, returns the message "Your email is already confirmed".
+
+### Email Confirmation via Token
+
+- **Description**: Confirms the user's email address using the token sent to their email.
+- **Path**: `/auth/confirmed_email/{token}`
+- **Method**: `GET`
+- **Input Parameters**:
+    - `token`: The unique token sent to the user's email address (required).
+- **Result**: Confirms the user's email address. If the address is already confirmed, returns the message "Your email address is already confirmed".
+
+### Note:
+Authentication and authorization: Registration of a new account is required. You will then be prompted to confirm your postage. The first manager in the system is the “administrator”, and the role of the “corruption manager” is responsible for the duties. The role can be changed to "administrator".
 
 ### Managing Photos in the Application:
 
