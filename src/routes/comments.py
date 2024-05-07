@@ -11,15 +11,16 @@ from src.database.models import Role
 from sqlalchemy.orm import Session
 from src.repository import roles
 router = APIRouter(prefix='/comments', tags=["comments"])
+
+@router.post("/comments/", response_model=schemas_comments.Comment)
+async def create_comment_route(comment: schemas_comments.CommentCreate, photo_id: int, db: AsyncSession = Depends(get_db), user: User = Depends(Auth.get_current_user)):
+    db_comment = await comments.create_comment(comment=comment, photo_id=photo_id, db=db, user=user)
+    return db_comment
 @router.get("/comments/{photo_id}/comments", response_model=schemas_comments.Comment)
 async def read_comment(photo_id: int, db: AsyncSession = Depends(get_db), user: User = Depends(Auth.get_current_user)):
     db_comment = await comments.get_comments(photo_id, db, user)
     if db_comment is None:
         raise HTTPException(status_code=404, detail="Comment not found")
-    return db_comment
-@router.post("/comments/", response_model=schemas_comments.Comment)
-async def create_comment_route(comment: schemas_comments.CommentCreate, photo_id: int, db: AsyncSession = Depends(get_db), user: User = Depends(Auth.get_current_user)):
-    db_comment = await comments.create_comment(comment=comment, photo_id=photo_id, db=db, user=user)
     return db_comment
 @router.put("/comments/{comment_id}")
 async def update_comment_route(comment_id: int, comment: CommentUpdateSchema, db: AsyncSession = Depends(get_db),
