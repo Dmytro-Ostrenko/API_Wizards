@@ -54,7 +54,6 @@ async def get_image(url: str = Query(...), db: AsyncSession = Depends(get_db),
     if photo:
         return {"title": f"Зображення з унікальним посиланням",
                 "description": photo.description,
-                "completed": False,
                 "created_at": photo.created_at,
                 "updated_at": photo.updated_at}
     else:
