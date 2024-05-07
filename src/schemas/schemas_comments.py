@@ -17,7 +17,6 @@ class Comment(BaseModel):
         orm_mode = True
 class CommentCreate(BaseModel):
     description: str
-    user_id: int
-    photo_id: int
+
 class CommentUpdateSchema(BaseModel):
     description: str
