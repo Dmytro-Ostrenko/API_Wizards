@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, join
 from typing import List, Union
 from fastapi import HTTPException
+from fastapi import HTTPException, status, Depends
 
 import sys
 from pathlib import Path
@@ -10,7 +11,8 @@ from pathlib import Path
 # Добавляем корневую папку проекта в sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-
+from src.repository import users as repository_users
+from src.repository import roles as repository_roles
 from src.database.models import User, Role, Photos
 from src.schemas.schemas_auth import UserModel
 from src.schemas.user import UserResponse
@@ -120,3 +122,4 @@ async def count_user_photos(username: str, db: AsyncSession) -> Union[int, None]
     result = await db.execute(stmt)
     photo_count = result.scalar_one_or_none()
     return photo_count
+

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status, Security
 from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 import sys
 from pathlib import Path
@@ -12,14 +12,17 @@ from src.database.db import get_db
 from src.repository import users as repository_users
 # from src.repository import photos as repository_photos
 from src.services.auth import auth_service
-from src.database.models import Role
+from src.database.models import Role, User
+from src.services.auth import Auth
 from src.schemas.user import UserResponse
+
+
 router = APIRouter(prefix='/user_option', tags=['user_option'])
 security = HTTPBearer()
 
 
 @router.get("/username", response_model=UserResponse)
-async def get_user_profile(username: str, db: Session = Depends(get_db)):
+async def get_user_profile(username: str, db: AsyncSession = Depends(get_db)):
     user = await repository_users.get_user_by_username(username, db)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -35,3 +38,4 @@ async def get_user_profile(username: str, db: Session = Depends(get_db)):
         created_at=user.created_at,
         photos_uploaded=photos_uploaded  # Додаємо кількість фотографій користувача до відповіді
     )                
+

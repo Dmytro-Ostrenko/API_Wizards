@@ -18,13 +18,12 @@ from src.database.models import User, Role
 from src.database.db import get_db
 from src.repository import users as repository_users
 from src.repository import roles as repository_roles
-from src.conf.config import config
 
 
 class Auth:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    SECRET_KEY = config.SECRET_KEY_JWT
-    ALGORITHM = config.ALGORITHM 
+    SECRET_KEY = "974790aec4ac460bdc11645decad4dce7c139b7f2982b7428ec44e886ea588c6"
+    ALGORITHM = "HS256"
 
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
@@ -97,11 +96,10 @@ class Auth:
         return user
     
     @staticmethod
-    async def change_user_role(admin_email: str, user_email: str, new_role: str, db: Session = Depends(get_db)):
-        admin = await repository_users.get_user_by_email(admin_email, db)
-        if admin is None or admin.role != Role.admin:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only admin can change user roles")
-
+    async def change_user_role(user_email: str, new_role: str, db: Session = Depends(get_db), user: User):
+        if user.role != Role.admin:
+            raise HTTPException(status_code=403, detail="Only admin can change user roles")
+        
         user = await repository_users.get_user_by_email(user_email, db)
         if user is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
@@ -112,3 +110,4 @@ class Auth:
         return {"message": "Role updated successfully"}
 
 auth_service = Auth()
+

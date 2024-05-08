@@ -12,7 +12,9 @@ from src.database.db import get_db
 from src.schemas.schemas_auth import UserModel, UserResponse, TokenModel
 from src.repository import users as repository_users
 from src.services.auth import auth_service
-from src.database.models import Role
+from src.database.models import Role, User
+from src.services.auth import Auth
+
 router = APIRouter(prefix='/auth', tags=['auth'])
 security = HTTPBearer()
 
@@ -57,9 +59,9 @@ async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(sec
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 @router.post("/change_role", response_model=dict)
-async def change_user_role(admin_email: str, user_email: str, new_role: Role, db: Session = Depends(get_db)):
+async def change_user_role(user_email: str, new_role: Role, db: Session = Depends(get_db), user: User = Depends(Auth.get_current_user)):
     try:
-        result = await auth_service.change_user_role(admin_email, user_email, new_role, db)
+        result = await auth_service.change_user_role(user_email, new_role, db)
         return {"message": result}
     except HTTPException as e:
         return {"detail": e.detail}
