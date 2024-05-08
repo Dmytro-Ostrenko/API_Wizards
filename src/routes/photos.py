@@ -108,7 +108,9 @@ async def get_qr_code(transformed_photo_id: int, db: AsyncSession = Depends(get_
 @router.post("/photos/tags/", response_model=PhotoTagsSchema)
 async def create_photo_tag(tag_name: str, db: AsyncSession = Depends(get_db), user: User = Depends(Auth.get_current_user)):
     tag = await photos.create_tag(tag_name, db, user)
-    return PhotoTagsSchema(tag_name=tag.tag_name)
+    if tag is not None:
+        raise HTTPException(status_code=409, detail="Tag already exists")
+    return PhotoTagsSchema(tag_name=tag_name)
 
 @router.post("/photos/{photo_id}/tags/{tag_id}/attach")
 async def attach_tag_to_photo_route(photo_id: int, tag_name: str, db: AsyncSession = Depends(get_db), user: User = Depends(Auth.get_current_user)):
